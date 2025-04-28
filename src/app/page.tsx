@@ -2,9 +2,21 @@
 
 import { useState } from 'react';
 import styles from './page.module.css';
-
+console.log('check');
 export default function Home() {
+  const directions = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [-1, 0],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+  ];
+
   const [turnColor, setTurnColor] = useState(1);
+
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -15,14 +27,34 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
+
+  const onearrow = (y: number, x: number, y_direction: number, x_direction: number) => {
+    const candidate = [];
+    let flag = 0;
+    for (
+      let i = y, p = x;
+      board[i] !== undefined && board[i][p] !== undefined && (board[i][p] !== 0 || flag === 0);
+      i += y_direction, p += x_direction
+    ) {
+      if (board[i][p] === turnColor) {
+        if (2 <= flag) {
+          const newBoard = structuredClone(board);
+          for (const c of candidate) {
+            newBoard[c[0]][c[1]] = turnColor;
+          }
+          setBoard(newBoard);
+          setTurnColor(2 / turnColor);
+        }
+        break;
+      }
+      candidate.push([i, p]);
+      flag += 1;
+    }
+  };
+
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
-    const newBoard = structuredClone(board);
-    if (board[y + 1] !== undefined && board[y + 1][x] === 2 / turnColor) {
-      newBoard[y][x] = turnColor;
-      setTurnColor(2 / turnColor);
-    }
-    setBoard(newBoard);
+    onearrow(y, x, 1, 0);
   };
   return (
     <div className={styles.container}>
