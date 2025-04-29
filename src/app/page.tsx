@@ -50,7 +50,7 @@ export default function Home() {
   };
 
   const eightarrow = (x: number, y: number) => {
-    let candidate = [];
+    let candidate: number[][] = [];
     for (const direction of directions) {
       console.log(direction);
       candidate = [...candidate, ...onearrow(y, x, direction[0], direction[1])];
