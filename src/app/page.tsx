@@ -9,7 +9,7 @@ export default function Home() {
     [-1, 0],
     [-1, 1],
     [0, -1],
-    [-1, 0],
+    [0, 1],
     [1, -1],
     [1, 0],
     [1, 1],
@@ -39,6 +39,7 @@ export default function Home() {
     ) {
       if (board[i][p] === turnColor) {
         if (2 <= flag) {
+          console.log('check commit');
           const newBoard = structuredClone(board);
           for (const c of candidate) {
             newBoard[c[0]][c[1]] = turnColor;
@@ -57,7 +58,8 @@ export default function Home() {
   const eightarrow = (x: number, y: number) => {
     let counter = 0;
     for (const direction of directions) {
-      counter = onearrow(y, x, direction[0], direction[1]);
+      console.log(direction);
+      counter += onearrow(y, x, direction[0], direction[1]);
     }
     console.log('check1');
     console.log(counter);
