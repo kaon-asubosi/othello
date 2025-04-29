@@ -33,7 +33,10 @@ export default function Home() {
     let flag = 0;
     for (
       let i = y, p = x;
-      board[i] !== undefined && board[i][p] !== undefined && (board[i][p] !== 0 || flag === 0);
+      board[i] !== undefined &&
+      board[i][p] !== undefined &&
+      (board[i][p] !== 0 || flag === 0) &&
+      !(board[i][p] !== 0 && flag === 0);
       i += y_direction, p += x_direction
     ) {
       if (board[i][p] === turnColor) {
