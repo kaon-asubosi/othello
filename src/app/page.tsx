@@ -31,6 +31,7 @@ export default function Home() {
   const onearrow = (y: number, x: number, y_direction: number, x_direction: number) => {
     const candidate = [];
     let flag = 0;
+    let flag2 = 0;
     for (
       let i = y, p = x;
       board[i] !== undefined && board[i][p] !== undefined && (board[i][p] !== 0 || flag === 0);
@@ -43,18 +44,32 @@ export default function Home() {
             newBoard[c[0]][c[1]] = turnColor;
           }
           setBoard(newBoard);
-          setTurnColor(2 / turnColor);
+          flag2 += 1;
         }
         break;
       }
       candidate.push([i, p]);
       flag += 1;
     }
+    return flag2;
+  };
+
+  const eightarrow = (x: number, y: number) => {
+    let counter = 0;
+    for (const direction of directions) {
+      counter = onearrow(y, x, direction[0], direction[1]);
+    }
+    console.log('check1');
+    console.log(counter);
+    if (counter > 0) {
+      console.log('check2');
+      setTurnColor(2 / turnColor);
+    }
   };
 
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
-    onearrow(y, x, 1, 0);
+    eightarrow(x, y);
   };
   return (
     <div className={styles.container}>
