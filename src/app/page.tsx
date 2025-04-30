@@ -80,10 +80,11 @@ export default function Home() {
       let i = y, p = x;
       board[i] !== undefined &&
       board[i][p] !== undefined &&
-      ((board[i][p] !== 0 && 3) || flag === 0) &&
+      ((board[i][p] !== 0 && board[i][p] !== 3) || flag === 0) &&
       !(board[i][p] !== 3 && flag === 0);
       i += y_direction, p += x_direction
     ) {
+      console.log('check2', i, p, board[i][p]);
       if (board[i][p] === turnColor) {
         if (2 <= flag) {
           return candidate;
