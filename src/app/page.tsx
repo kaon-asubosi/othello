@@ -28,6 +28,14 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
+  const search = () => {};
+
+  const search_eight_arrow = (y: number, x: number) => {};
+
+  const search_arrow = (y: number, x: number, y_direction: number, x_direction: number) => {
+    const flag = 0;
+  };
+
   const onearrow = (y: number, x: number, y_direction: number, x_direction: number) => {
     const candidate = [];
     let flag = 0;
@@ -84,13 +92,14 @@ export default function Home() {
               {color !== 0 && (
                 <div
                   className={styles.stone}
-                  style={{ background: color === 1 ? `#000` : `#fff` }}
+                  style={{ background: color === 1 ? `#000` : color === 2 ? `#fff` : `#ff0` }}
                 />
               )}
             </div>
           )),
         )}
       </div>
+      <div className={styles.score}>スコア</div>
     </div>
   );
 }
