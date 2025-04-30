@@ -34,12 +34,12 @@ export default function Home() {
       let i = y, p = x;
       board[i] !== undefined &&
       board[i][p] !== undefined &&
-      ((board[i][p] !== turnColor && 3) || flag === 0) &&
+      ((board[i][p] !== turnColor && board[i][p] !== 3) || flag === 0) &&
       !(board[i][p] !== turnColor && flag === 0);
       i += y_direction, p += x_direction
     ) {
       if (board[i][p] === 0) {
-        if (2 >= flag) {
+        if (2 <= flag) {
           return [[i, p]];
         }
         break;
@@ -65,8 +65,10 @@ export default function Home() {
 
   const search = () => {
     for (let i = 0; i < 8; i++) {
-      for (let p = 0; i < 8; i++) {
-        search_eight_arrow(p, i);
+      for (let p = 0; p < 8; p++) {
+        if (board[i][p] === turnColor) {
+          search_eight_arrow(i, p);
+        }
       }
     }
   };
@@ -78,13 +80,12 @@ export default function Home() {
       let i = y, p = x;
       board[i] !== undefined &&
       board[i][p] !== undefined &&
-      (board[i][p] !== 0 || flag === 0) &&
-      !(board[i][p] !== 0 && flag === 0);
+      ((board[i][p] !== 0 && 3) || flag === 0) &&
+      !(board[i][p] !== 3 && flag === 0);
       i += y_direction, p += x_direction
     ) {
       if (board[i][p] === turnColor) {
         if (2 <= flag) {
-          console.log('check commit');
           return candidate;
         }
         break;
@@ -98,18 +99,14 @@ export default function Home() {
   const eightarrow = (x: number, y: number) => {
     let candidate: number[][] = [];
     for (const direction of directions) {
-      console.log(direction);
       candidate = [...candidate, ...onearrow(y, x, direction[0], direction[1])];
     }
-    console.log(candidate);
-    console.log('check1');
     if (candidate.length > 0) {
       const newBoard = structuredClone(board);
       for (const c of candidate) {
         newBoard[c[0]][c[1]] = turnColor;
       }
       setBoard(newBoard);
-      console.log('check2');
       setTurnColor(2 / turnColor);
     }
   };
@@ -119,6 +116,7 @@ export default function Home() {
     eightarrow(x, y);
     search();
   };
+  search();
   return (
     <div className={styles.container}>
       <div className={styles.board}>
