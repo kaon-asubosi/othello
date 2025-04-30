@@ -28,12 +28,47 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const search = () => {};
-
-  const search_eight_arrow = (y: number, x: number) => {};
-
   const search_arrow = (y: number, x: number, y_direction: number, x_direction: number) => {
-    const flag = 0;
+    let flag = 0;
+    for (
+      let i = y, p = x;
+      board[i] !== undefined &&
+      board[i][p] !== undefined &&
+      ((board[i][p] !== turnColor && 3) || flag === 0) &&
+      !(board[i][p] !== turnColor && flag === 0);
+      i += y_direction, p += x_direction
+    ) {
+      if (board[i][p] === 0) {
+        if (2 >= flag) {
+          return [[i, p]];
+        }
+        break;
+      }
+      flag += 1;
+    }
+    return [];
+  };
+
+  const search_eight_arrow = (y: number, x: number) => {
+    let candidate: number[][] = [];
+    for (const direction of directions) {
+      candidate = [...candidate, ...search_arrow(y, x, direction[0], direction[1])];
+    }
+    if (candidate.length > 0) {
+      const newBoard = structuredClone(board);
+      for (const c of candidate) {
+        newBoard[c[0]][c[1]] = 3;
+      }
+      setBoard(newBoard);
+    }
+  };
+
+  const search = () => {
+    for (let i = 0; i < 8; i++) {
+      for (let p = 0; i < 8; i++) {
+        search_eight_arrow(p, i);
+      }
+    }
   };
 
   const onearrow = (y: number, x: number, y_direction: number, x_direction: number) => {
@@ -82,6 +117,7 @@ export default function Home() {
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     eightarrow(x, y);
+    search();
   };
   return (
     <div className={styles.container}>
