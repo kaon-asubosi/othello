@@ -102,19 +102,32 @@ export default function Home() {
     for (const direction of directions) {
       candidate = [...candidate, ...onearrow(y, x, direction[0], direction[1])];
     }
+    const newBoard = structuredClone(board);
     if (candidate.length > 0) {
-      const newBoard = structuredClone(board);
       for (const c of candidate) {
         newBoard[c[0]][c[1]] = turnColor;
       }
-      setBoard(newBoard);
       setTurnColor(2 / turnColor);
+      return newBoard;
     }
+    return newBoard;
+  };
+
+  const clean_scan = (newBoard: number[][]) => {
+    for (let i = 0; i < 8; i++) {
+      for (let p = 0; p < 8; p++) {
+        if (newBoard[i][p] === 3) {
+          newBoard[i][p] = 0;
+        }
+      }
+    }
+    setBoard(newBoard);
   };
 
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
-    eightarrow(x, y);
+
+    clean_scan(eightarrow(x, y));
     search();
   };
   search();
