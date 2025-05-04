@@ -17,6 +17,10 @@ export default function Home() {
 
   const [turnColor, setTurnColor] = useState(1);
 
+  const [Blackscore, setBlack] = useState('2');
+
+  const [Whitescore, setWhite] = useState('2');
+
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -114,13 +118,23 @@ export default function Home() {
   };
 
   const clean_scan = (newBoard: number[][]) => {
+    let black = 0;
+    let white = 0;
     for (let i = 0; i < 8; i++) {
       for (let p = 0; p < 8; p++) {
+        if (newBoard[i][p] === 1) {
+          black += 1;
+        }
+        if (newBoard[i][p] === 2) {
+          white += 1;
+        }
         if (newBoard[i][p] === 3) {
           newBoard[i][p] = 0;
         }
       }
     }
+    setWhite(String(white));
+    setBlack(String(black));
     setBoard(newBoard);
   };
 
@@ -147,7 +161,13 @@ export default function Home() {
           )),
         )}
       </div>
-      <div className={styles.score}>スコア</div>
+      <div className={styles.score}>
+        <div />
+        <div className={styles.scorebox}>
+          <div className={styles.black}>{Blackscore}</div>
+          <div className={styles.white}>{Whitescore}</div>
+        </div>
+      </div>
     </div>
   );
 }

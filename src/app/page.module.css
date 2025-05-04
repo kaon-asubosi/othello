@@ -39,3 +39,29 @@
   background-color: aqua;
   border: 1px solid #000;
 }
+
+.scorebox {
+  display: flex;
+}
+
+.black {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 135px;
+  height: 80px;
+  font-size: 60px;
+  color: black;
+  background-color: #9e9e9e;
+}
+
+.white {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 135px;
+  height: 80px;
+  font-size: 60px;
+  color: white;
+  background-color: #505050;
+}
