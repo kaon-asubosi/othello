@@ -36,14 +36,13 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const static_next = (taskColor: number) => {
-    return static_candidate(taskColor)
+  const static_next = (taskColor: number, newBoard: number[][]) => {
+    return static_candidate(taskColor, newBoard)
       .flat(Infinity)
       .some((color) => color === 3);
   };
 
-  const static_candidate = (taskColor: number) => {
-    const boardwithCandidates = structuredClone(board);
+  const static_candidate = (taskColor: number, boardwithCandidates: number[][]) => {
     boardwithCandidates.map((row, y) =>
       row.map((color, x) => {
         if (boardwithCandidates[y][x] === taskColor)
@@ -133,7 +132,10 @@ export default function Home() {
       !(board[i][p] !== 0 && flag === 0);
       i += y_direction, p += x_direction
     ) {
+      console.log(board[i][p]);
+      console.log(turnColor);
       if (board[i][p] === turnColor) {
+        console.log('check1');
         if (2 <= flag) {
           return candidate;
         }
@@ -146,6 +148,7 @@ export default function Home() {
   };
 
   const eightarrow = (x: number, y: number) => {
+    console.log(board);
     let candidate: number[][] = [];
     for (const direction of directions) {
       candidate = [...candidate, ...onearrow(y, x, direction[0], direction[1])];
@@ -156,7 +159,9 @@ export default function Home() {
         newBoard[c[0]][c[1]] = turnColor;
       }
       setBoard(newBoard);
+      return newBoard;
     }
+    return newBoard;
   };
 
   // const clean_scan = (newBoard: number[][]) => {
@@ -171,14 +176,19 @@ export default function Home() {
   // };
 
   const clickHandler = (x: number, y: number) => {
-    console.log(x, y);
-    eightarrow(x, y);
-    if (static_next(2 / turnColor)) {
+    const oldboard = board.flat(Infinity).join(' ');
+    const resultboard = structuredClone(eightarrow(x, y));
+    const flag = resultboard.flat(Infinity).join(' ') !== oldboard; //boardと比較して変わっていたら更新できていたとする
+    if (static_next(2 / turnColor, resultboard) && flag) {
       setTurnColor(2 / turnColor);
     } else {
-      if (static_next(turnColor)) {
-        console.log('置ける場所がありません');
-        alert('置ける場所がありません');
+      if (static_next(turnColor, resultboard)) {
+        if (flag) {
+          console.log('置ける場所がありません');
+          alert('置ける場所がありません');
+        } else {
+          console.log('置ける場所に置いてください');
+        }
       } else {
         console.log('双方置ける場所がないため強制終了です');
         alert('双方置ける場所がないため強制終了です');
@@ -189,7 +199,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.board}>
-        {static_candidate(turnColor).map((row, y) =>
+        {static_candidate(turnColor, structuredClone(board)).map((row, y) =>
           row.map((color, x) => (
             <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)}>
               {color !== 0 && (
