@@ -36,22 +36,26 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const static_next = (newboard: number[][]) => {};
+  const static_next = (taskColor: number) => {
+    return static_candidate(taskColor)
+      .flat(Infinity)
+      .some((color) => color === 3);
+  };
 
   const static_reverce = (newboard: number[][], x: number, y: number) => {};
 
-  const static_candidate = () => {
+  const static_candidate = (taskColor: number) => {
     const boardwithCandidates = structuredClone(board);
     boardwithCandidates.map((row, y) =>
       row.map((color, x) => {
-        if (boardwithCandidates[y][x] === turnColor)
+        if (boardwithCandidates[y][x] === taskColor)
           for (const direction of directions) {
             let flag = 0;
             for (
               let i = y + direction[0], p = x + direction[1];
               boardwithCandidates[i] !== undefined &&
               boardwithCandidates[i][p] !== undefined &&
-              boardwithCandidates[i][p] !== turnColor &&
+              boardwithCandidates[i][p] !== taskColor &&
               boardwithCandidates[i][p] !== 3;
               i += direction[0], p += direction[1]
             ) {
@@ -153,7 +157,6 @@ export default function Home() {
       for (const c of candidate) {
         newBoard[c[0]][c[1]] = turnColor;
       }
-      setTurnColor(2 / turnColor);
       setBoard(newBoard);
     }
   };
@@ -172,11 +175,20 @@ export default function Home() {
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
     eightarrow(x, y);
+    if (static_next(2 / turnColor)) {
+      setTurnColor(2 / turnColor);
+    } else {
+      if (static_next(turnColor)) {
+        console.log('置ける場所がありません');
+      } else {
+        //ここに強制終了
+      }
+    }
   };
   return (
     <div className={styles.container}>
       <div className={styles.board}>
-        {static_candidate().map((row, y) =>
+        {static_candidate(turnColor).map((row, y) =>
           row.map((color, x) => (
             <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)}>
               {color !== 0 && (
