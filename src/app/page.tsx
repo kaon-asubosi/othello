@@ -15,11 +15,15 @@ export default function Home() {
     [1, 1],
   ];
 
+  //改造計画
+  //次の色が置けるかを静的に探知するプログラムを作る return true or false
+  //押したときに色を変えられるかを静的に探知するプログラムを作る return true or false
+  //それらのプログラムをclickHandlerで実行し次のターンのスキップと置かないプログラムを作る
+  //clickHandler=>置けるか静的探知=>false:次の入力待ち,true:置き換える=>
+  //置き換えたボードを元に次の色が置けるか静的探知=>false:色を変えずに通知を出す:true:色を変える=>予測地点を表示=>
+  //値を更新
+
   const [turnColor, setTurnColor] = useState(1);
-
-  const [Blackscore, setBlack] = useState('2');
-
-  const [Whitescore, setWhite] = useState('2');
 
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -31,6 +35,14 @@ export default function Home() {
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
+
+  const static_next = (newboard: number[][]) => {};
+
+  const static_reverce = (newboard: number[][], x: number, y: number) => {};
+
+  const calcpoint = (color: number) => {
+    return board.flat(Infinity).filter((col) => col === color).length;
+  };
 
   const search_arrow = (y: number, x: number, y_direction: number, x_direction: number) => {
     let flag = 0;
@@ -118,23 +130,13 @@ export default function Home() {
   };
 
   const clean_scan = (newBoard: number[][]) => {
-    let black = 0;
-    let white = 0;
     for (let i = 0; i < 8; i++) {
       for (let p = 0; p < 8; p++) {
-        if (newBoard[i][p] === 1) {
-          black += 1;
-        }
-        if (newBoard[i][p] === 2) {
-          white += 1;
-        }
         if (newBoard[i][p] === 3) {
           newBoard[i][p] = 0;
         }
       }
     }
-    setWhite(String(white));
-    setBlack(String(black));
     setBoard(newBoard);
   };
 
@@ -164,8 +166,8 @@ export default function Home() {
       <div className={styles.score}>
         <div />
         <div className={styles.scorebox}>
-          <div className={styles.black}>{Blackscore}</div>
-          <div className={styles.white}>{Whitescore}</div>
+          <div className={styles.black}>{calcpoint(1)}</div>
+          <div className={styles.white}>{calcpoint(2)}</div>
         </div>
       </div>
     </div>
