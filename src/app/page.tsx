@@ -40,54 +40,85 @@ export default function Home() {
 
   const static_reverce = (newboard: number[][], x: number, y: number) => {};
 
+  const static_candidate = () => {
+    const boardwithCandidates = structuredClone(board);
+    boardwithCandidates.map((row, y) =>
+      row.map((color, x) => {
+        if (boardwithCandidates[y][x] === turnColor)
+          for (const direction of directions) {
+            let flag = 0;
+            for (
+              let i = y + direction[0], p = x + direction[1];
+              boardwithCandidates[i] !== undefined &&
+              boardwithCandidates[i][p] !== undefined &&
+              boardwithCandidates[i][p] !== turnColor &&
+              boardwithCandidates[i][p] !== 3;
+              i += direction[0], p += direction[1]
+            ) {
+              if (boardwithCandidates[i][p] === 0) {
+                if (1 <= flag) {
+                  boardwithCandidates[i][p] = 3;
+                  break;
+                } else {
+                  break;
+                }
+              }
+              flag += 1;
+            }
+          }
+      }),
+    );
+    return boardwithCandidates;
+  };
+
   const calcpoint = (color: number) => {
     return board.flat(Infinity).filter((col) => col === color).length;
   };
 
-  const search_arrow = (y: number, x: number, y_direction: number, x_direction: number) => {
-    let flag = 0;
-    for (
-      let i = y, p = x;
-      board[i] !== undefined &&
-      board[i][p] !== undefined &&
-      ((board[i][p] !== turnColor && board[i][p] !== 3) || flag === 0) &&
-      !(board[i][p] !== turnColor && flag === 0);
-      i += y_direction, p += x_direction
-    ) {
-      if (board[i][p] === 0) {
-        if (2 <= flag) {
-          return [[i, p]];
-        }
-        break;
-      }
-      flag += 1;
-    }
-    return [];
-  };
+  // const search_arrow = (y: number, x: number, y_direction: number, x_direction: number) => {
+  //   let flag = 0;
+  //   for (
+  //     let i = y, p = x;
+  //     board[i] !== undefined &&
+  //     board[i][p] !== undefined &&
+  //     ((board[i][p] !== turnColor && board[i][p] !== 3) || flag === 0) &&
+  //     !(board[i][p] !== turnColor && flag === 0);
+  //     i += y_direction, p += x_direction
+  //   ) {
+  //     if (board[i][p] === 0) {
+  //       if (2 <= flag) {
+  //         return [[i, p]];
+  //       }
+  //       break;
+  //     }
+  //     flag += 1;
+  //   }
+  //   return [];
+  // };
 
-  const search_eight_arrow = (y: number, x: number) => {
-    let candidate: number[][] = [];
-    for (const direction of directions) {
-      candidate = [...candidate, ...search_arrow(y, x, direction[0], direction[1])];
-    }
-    if (candidate.length > 0) {
-      const newBoard = structuredClone(board);
-      for (const c of candidate) {
-        newBoard[c[0]][c[1]] = 3;
-      }
-      setBoard(newBoard);
-    }
-  };
+  // const search_eight_arrow = (y: number, x: number) => {
+  //   let candidate: number[][] = [];
+  //   for (const direction of directions) {
+  //     candidate = [...candidate, ...search_arrow(y, x, direction[0], direction[1])];
+  //   }
+  //   if (candidate.length > 0) {
+  //     const newBoard = structuredClone(board);
+  //     for (const c of candidate) {
+  //       newBoard[c[0]][c[1]] = 3;
+  //     }
+  //     setBoard(newBoard);
+  //   }
+  // };
 
-  const search = () => {
-    for (let i = 0; i < 8; i++) {
-      for (let p = 0; p < 8; p++) {
-        if (board[i][p] === turnColor) {
-          search_eight_arrow(i, p);
-        }
-      }
-    }
-  };
+  // const search = () => {
+  //   for (let i = 0; i < 8; i++) {
+  //     for (let p = 0; p < 8; p++) {
+  //       if (board[i][p] === turnColor) {
+  //         search_eight_arrow(i, p);
+  //       }
+  //     }
+  //   }
+  // };
 
   const onearrow = (y: number, x: number, y_direction: number, x_direction: number) => {
     const candidate = [];
@@ -96,11 +127,10 @@ export default function Home() {
       let i = y, p = x;
       board[i] !== undefined &&
       board[i][p] !== undefined &&
-      ((board[i][p] !== 0 && board[i][p] !== 3) || flag === 0) &&
-      !(board[i][p] !== 3 && flag === 0);
+      (board[i][p] !== 0 || flag === 0) &&
+      !(board[i][p] !== 0 && flag === 0);
       i += y_direction, p += x_direction
     ) {
-      console.log('check2', i, p, board[i][p]);
       if (board[i][p] === turnColor) {
         if (2 <= flag) {
           return candidate;
@@ -124,33 +154,29 @@ export default function Home() {
         newBoard[c[0]][c[1]] = turnColor;
       }
       setTurnColor(2 / turnColor);
-      return newBoard;
+      setBoard(newBoard);
     }
-    return newBoard;
   };
 
-  const clean_scan = (newBoard: number[][]) => {
-    for (let i = 0; i < 8; i++) {
-      for (let p = 0; p < 8; p++) {
-        if (newBoard[i][p] === 3) {
-          newBoard[i][p] = 0;
-        }
-      }
-    }
-    setBoard(newBoard);
-  };
+  // const clean_scan = (newBoard: number[][]) => {
+  //   for (let i = 0; i < 8; i++) {
+  //     for (let p = 0; p < 8; p++) {
+  //       if (newBoard[i][p] === 3) {
+  //         newBoard[i][p] = 0;
+  //       }
+  //     }
+  //   }
+  //   setBoard(newBoard);
+  // };
 
   const clickHandler = (x: number, y: number) => {
     console.log(x, y);
-
-    clean_scan(eightarrow(x, y));
-    search();
+    eightarrow(x, y);
   };
-  search();
   return (
     <div className={styles.container}>
       <div className={styles.board}>
-        {board.map((row, y) =>
+        {static_candidate().map((row, y) =>
           row.map((color, x) => (
             <div className={styles.cell} key={`${x}-${y}`} onClick={() => clickHandler(x, y)}>
               {color !== 0 && (
