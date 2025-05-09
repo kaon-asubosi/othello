@@ -42,8 +42,6 @@ export default function Home() {
       .some((color) => color === 3);
   };
 
-  const static_reverce = (newboard: number[][], x: number, y: number) => {};
-
   const static_candidate = (taskColor: number) => {
     const boardwithCandidates = structuredClone(board);
     boardwithCandidates.map((row, y) =>
@@ -180,11 +178,14 @@ export default function Home() {
     } else {
       if (static_next(turnColor)) {
         console.log('置ける場所がありません');
+        alert('置ける場所がありません');
       } else {
-        //ここに強制終了
+        console.log('双方置ける場所がないため強制終了です');
+        alert('双方置ける場所がないため強制終了です');
       }
     }
   };
+
   return (
     <div className={styles.container}>
       <div className={styles.board}>
